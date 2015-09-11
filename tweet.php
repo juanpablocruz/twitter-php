@@ -71,10 +71,17 @@ class Tweet {
 	}
 
 	function processText($tweet){
-		$text = $this->tweets[$tweet]->text;
+		if(!is_null($this->tweets[$tweet]->retweeted_status)){
+			$item = $this->tweets[$tweet]->retweeted_status;
+        	$text = "RT @".$item->user->screen_name.": ".$item->text;
+        } else {
+          $text = $this->tweets[$tweet]->text;
+        }
+
 		$text = preg_replace('@(https?://([-\w\.]+[-\w])+(:\d+)?(/([\w/_\.#-]*(\?\S+)?[^\.\s])?)?)@', '<a href="$1" target="_blank">$1</a>', $text);
 		$text = preg_replace('/@(\w+)/', ' <a href="https://twitter.com/$1"  target="_blank">@$1</a>', $text);
 		$text = preg_replace('/#(\w+)/', ' <a href="https://twitter.com/hashtag/$1"  target="_blank">#$1</a>', $text);
+		
 		echo $text;
 	}
 
